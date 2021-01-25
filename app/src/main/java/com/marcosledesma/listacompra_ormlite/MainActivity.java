@@ -27,8 +27,6 @@ public class MainActivity extends AppCompatActivity {
 
     // viewBinding
     private ActivityMainBinding binding;
-    // Binding para eliminar desde la Card
-    private ProductoCardBinding bindingCard;
 
     // Base de Datos
     private ProductosHelper helper;
@@ -44,11 +42,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
-        bindingCard = ProductoCardBinding.inflate(getLayoutInflater()); //
         setContentView(binding.getRoot());
-
-        // Obtener el id del Producto a eliminar
-        //int idEliminar = getIntent().getExtras().getInt("ID_ELIMINAR");
+        binding.toolbar.setTitle("Lista de la compra");
 
         // Instanciar Base de Datos -> // helper = new ProductosHelper(this);
         // Instanciar Base de Datos (compatible con cualquier versión de ORM Lite)
@@ -57,22 +52,21 @@ public class MainActivity extends AppCompatActivity {
         // Instanciar Recycler
         listaProductos = new ArrayList<>();
         lm = new LinearLayoutManager(this);
-        adapter = new ProductosAdapter(this, listaProductos, resource);
-        binding.contenido.recyclerView.setHasFixedSize(true);
-        binding.contenido.recyclerView.setAdapter(adapter);
-        binding.contenido.recyclerView.setLayoutManager(lm);
-
 
         if (helper != null){
             try {
                 daoProductos = helper.getDaoProducto();
                 // Rellenar lista con datos de la Base de datos (queryForAll)
                 listaProductos.addAll(daoProductos.queryForAll());
-                adapter.notifyDataSetChanged();
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
         }
+        //
+        adapter = new ProductosAdapter(this, listaProductos, resource, daoProductos);
+        binding.contenido.recyclerView.setHasFixedSize(true);
+        binding.contenido.recyclerView.setAdapter(adapter);
+        binding.contenido.recyclerView.setLayoutManager(lm);
 
         // CREAR con el fab
         binding.fab.setOnClickListener(new View.OnClickListener() {
@@ -82,39 +76,9 @@ public class MainActivity extends AppCompatActivity {
                 crearProducto().show();
             }
         });
-
-        // ELIMINAR con ImageButton en card
-        // (pedir confirmación con otro Alert Dialog)
-        bindingCard.btnEliminarCard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setTitle("¿Estás seguro de que quieres eliminar?");
-                builder.setNegativeButton("CANCELAR", null);
-
-                builder.setPositiveButton("ELIMINAR", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                        builder.setTitle("¿Seguro? No podrás recuperar el dato eliminado");
-                        builder.setPositiveButton("SÍ, ELIMINAR", null);
-                        try {
-                            // Obtener ID del producto a eliminar (id de la BD, no resource del adapter)
-                            Producto producto = daoProductos.queryForId(getIntent().getExtras().getInt("ID_ELIMINAR"));
-                            daoProductos.delete(producto);  //
-                            finish();
-                        } catch (SQLException throwables) {
-                            throwables.printStackTrace();
-                        }
-                    }
-                });
-                // Mostrar Alert Dialog
-                builder.show();
-            }
-        });
     }
 
-    // Func para crear ordenador con el Alert Dialog
+    // Func para crear producto con el Alert Dialog
     private AlertDialog crearProducto(){
         // 1. Builder
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -166,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        // Siempre que vuelta de la otra actividad limpiará la lista y la volverá a rellenar
+        // Siempre que vuelva de la otra actividad limpiará la lista y la volverá a rellenar
         // con lo obtenido de la query
         listaProductos.clear();
         try {

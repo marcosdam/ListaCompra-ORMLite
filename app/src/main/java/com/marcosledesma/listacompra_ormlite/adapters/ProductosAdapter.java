@@ -1,6 +1,7 @@
 package com.marcosledesma.listacompra_ormlite.adapters;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,12 +10,16 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.j256.ormlite.dao.Dao;
 import com.marcosledesma.listacompra_ormlite.CrudActivity;
 import com.marcosledesma.listacompra_ormlite.MainActivity;
 import com.marcosledesma.listacompra_ormlite.R;
 import com.marcosledesma.listacompra_ormlite.modelos.Producto;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public class ProductosAdapter extends RecyclerView.Adapter<ProductosAdapter.ProductoVH> {
@@ -23,13 +28,14 @@ public class ProductosAdapter extends RecyclerView.Adapter<ProductosAdapter.Prod
     private Context context;
     private List<Producto> objects;
     private int resource;
+    private Dao<Producto, Integer> daoProductos;
 
-    public ProductosAdapter(Context context, List<Producto> objects, int resource){
+    public ProductosAdapter(Context context, List<Producto> objects, int resource, Dao<Producto, Integer> daoProductos){
         this.context = context;
         this.objects = objects;
         this.resource = resource;
+        this.daoProductos = daoProductos;
     }
-
 
     @NonNull
     @Override
@@ -46,9 +52,7 @@ public class ProductosAdapter extends RecyclerView.Adapter<ProductosAdapter.Prod
     @Override
     public void onBindViewHolder(@NonNull ProductoVH holder, int position) {
         holder.txtNombre.setText(objects.get(position).getNombre());
-        holder.txtPrecio.setText("Precio:   " + objects.get(position).getPrecio() + "€");
         holder.txtCantidad.setText("Cantidad:   " + objects.get(position).getCantidad());
-        holder.txtImporteTotal.setText("Importe total:   " + objects.get(position).getImporteTotal() + "€");
 
         // Asignar onClick a ImageButton lápiz (NO a toda la fila (a tod0 el ViewHolder) )
         holder.btnEditar.setOnClickListener(new View.OnClickListener() {
@@ -66,15 +70,31 @@ public class ProductosAdapter extends RecyclerView.Adapter<ProductosAdapter.Prod
         });
 
         // Asignar onClick a ImageButton papelera (btn del VH)
-        // (Aquí no AlertDialog, solo crear intent para eliminar mediante id en Main)
         holder.btnEliminar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Bundle bundle = new Bundle();
-                bundle.putInt("ID_ELIMINAR", objects.get(position).getId());
-                Intent intent = new Intent(context, MainActivity.class);
-                intent.putExtras(bundle);
-                context.startActivity(intent);
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle("Eliminar producto");
+                builder.setMessage("¿Seguro?");
+                builder.setNegativeButton("CANCELAR", null);
+
+                builder.setPositiveButton("ELIMINAR", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        try {
+                            // Obtener ID del producto a eliminar
+                            Producto producto = daoProductos.queryForId(objects.get(position).getId());
+                            daoProductos.delete(producto);
+                            objects.remove(producto);
+                            ProductosAdapter.this.notifyDataSetChanged();
+                        } catch (SQLException throwables) {
+                            throwables.printStackTrace();
+                        }
+                    }
+                });
+                // Mostrar Alert Dialog
+                builder.create();
+                builder.show();
             }
         });
     }
@@ -86,16 +106,14 @@ public class ProductosAdapter extends RecyclerView.Adapter<ProductosAdapter.Prod
 
     public static class ProductoVH extends RecyclerView.ViewHolder {
         ImageButton btnEliminar, btnEditar;
-        TextView txtNombre, txtPrecio, txtCantidad, txtImporteTotal;
+        TextView txtNombre, txtCantidad;
 
         public ProductoVH(@NonNull View itemView) {
             super(itemView);
             btnEditar = itemView.findViewById(R.id.btnEditarCard);
             btnEliminar = itemView.findViewById(R.id.btnEliminarCard);
             txtNombre = itemView.findViewById(R.id.txtNombreCard);
-            txtPrecio = itemView.findViewById(R.id.txtPrecioCard);
             txtCantidad = itemView.findViewById(R.id.txtCantidadCard);
-            txtImporteTotal = itemView.findViewById(R.id.txtImporteTotalCard);
         }
     }
 }

@@ -54,25 +54,11 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/txtPrecioCard"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="15dp"
-            android:text="TextView" />
-
-        <TextView
             android:id="@+id/txtCantidadCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="15dp"
             android:text="TextView" />
 
-        <TextView
-            android:id="@+id/txtImporteTotalCard"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="15dp"
-            android:text="TextView"
-            android:textAlignment="textEnd" />
     </LinearLayout>
 </androidx.cardview.widget.CardView>

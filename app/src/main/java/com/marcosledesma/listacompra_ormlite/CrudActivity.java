@@ -50,6 +50,8 @@ public class CrudActivity extends AppCompatActivity {
             producto = daoProductos.queryForId(id);
 
             binding.txtNombreCrud.setText(producto.getNombre());   // TextView (solo lectura)
+            binding.txtPrecioCrud.setText("Precio:  " + producto.getPrecio() + "€");
+            binding.txtCantidadCrud.setText("Cantidad:  " + producto.getCantidad());
             binding.txtImporteTotalCrud.setText("Importe total:     " + producto.getImporteTotal() + "€");   // TextView (solo lectura)
 
             // BTN Actualizar (Solo se podrá editar el precio y la cantidad, no el nombre, importeTotal se recalcula)
