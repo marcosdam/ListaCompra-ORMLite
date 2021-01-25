@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    tools:context=".CrudActivity">
+
+    <TextView
+        android:id="@+id/txtNombreCrud"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:ems="10"
+        android:hint="Nombre"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/txtPrecioCrud"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:ems="10"
+        android:hint="Editar precio"
+        android:inputType="numberDecimal" />
+
+    <EditText
+        android:id="@+id/txtCantidadCrud"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:ems="10"
+        android:hint="Editar cantidad"
+        android:inputType="number" />
+
+    <TextView
+        android:id="@+id/txtImporteTotalCrud"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:ems="10"
+        android:hint="Importe total"
+        android:textAlignment="textEnd"
+        android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/btnActualizarCrud"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:layout_weight="1"
+        android:backgroundTint="#4CAF50"
+        android:text="ACTUALIZAR" />
+
+</LinearLayout>

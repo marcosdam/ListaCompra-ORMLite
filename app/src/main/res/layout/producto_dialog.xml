@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/txtNombreDialog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:ems="10"
+        android:hint="Escriba el nombre producto"
+        android:inputType="textPersonName" />
+
+    <EditText
+        android:id="@+id/txtPrecioDialog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:ems="10"
+        android:hint="Escriba el precio del producto"
+        android:inputType="numberDecimal" />
+
+    <EditText
+        android:id="@+id/txtCantidadDialog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:ems="10"
+        android:hint="Escriba la cantidad"
+        android:inputType="number" />
+
+    <TextView
+        android:id="@+id/txtImporteTotalDialog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:ems="10"
+        android:hint="Importe Total (€)"
+        android:inputType="numberDecimal"
+        android:textAlignment="textEnd"
+        android:textSize="18sp" />
+</LinearLayout>
